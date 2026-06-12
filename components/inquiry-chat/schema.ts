@@ -37,7 +37,8 @@ export function validateStep(
 
     for (const field of fieldsToValidate) {
       const text = String(formData[field.key] || "").trim();
-      if (!text) {
+      const isOptional = (field as any).optional;
+      if (!isOptional && !text) {
         errors[field.key] = "This field is required";
       }
       if (field.type === "email" && text) {

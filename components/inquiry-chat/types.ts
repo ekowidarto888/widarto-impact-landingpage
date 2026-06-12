@@ -8,6 +8,7 @@ export interface TextField {
   placeholder?: string;
   type?: string;
   textarea?: boolean;
+  optional?: boolean;
 }
 
 export interface Option {

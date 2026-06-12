@@ -29,7 +29,7 @@ export const KICKOFF_OPTIONS: Option[] = [
 ];
 
 export const COMPLETION_OPTIONS: Option[] = [
-  { title: "In 3 months" },
+  { title: "In 2-3 months" },
   { title: "Within the next 6 months" },
   { title: "In about a year" },
   { title: "Not sure yet" },
@@ -93,10 +93,10 @@ export function getSteps(formData: Record<string, unknown>): StepConfig[] {
       card: {
         type: "text",
         fields: [
-          { key: "fullName", label: "My name is", placeholder: "Joko" },
+          { key: "fullName", label: "My name is", placeholder: "Your fullname" },
           { key: "role", label: "I'm a", placeholder: "Marketing Director" },
-          { key: "company", label: "at", placeholder: "ACME Corp" },
-          { key: "website", label: "Our website or social media is", placeholder: "https://..." },
+          { key: "company", label: "at", placeholder: "Your company" },
+          { key: "website", label: "Our website or social media is", placeholder: "https://...", optional: true },
         ],
         showBack: false,
       },

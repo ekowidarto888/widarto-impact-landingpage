@@ -10,13 +10,14 @@ interface ChatFormField {
   key: string;
   textarea?: boolean;
   type?: string;
+  optional?: boolean;
 }
 
 const ID_FIELDS: ChatFormField[] = [
-  { label: "My name is", placeholder: "Joko", key: "fullName" },
+  { label: "My name is", placeholder: "Your fullname", key: "fullName" },
   { label: "I'm a", placeholder: "Marketing Director", key: "role" },
-  { label: "at", placeholder: "ACME Corp", key: "company" },
-  { label: "Our website or social media is", placeholder: "https://...", key: "website" }
+  { label: "at", placeholder: "Your company", key: "company" },
+  { label: "Our website or social media is", placeholder: "https://...", key: "website", optional: true }
 ];
 
 const PD_FIELDS: ChatFormField[] = [
@@ -56,7 +57,7 @@ const OPT = {
     { title: "No rush, whatever works best for your team" }
   ],
   completion: [
-    { title: "In 3 months" },
+    { title: "In 2-3 months" },
     { title: "Within the next 6 months" },
     { title: "In about a year" },
     { title: "Not sure yet" }
@@ -507,8 +508,15 @@ export default function InquiryChat({ mode = "inline", onClose }: InquiryChatPro
   };
 
   const handleMiniOkClick = (key: string, idx: number) => {
+    const steps = getSteps(formData);
+    const activeCard = steps[step].card;
+    let isOptional = false;
+    if (activeCard && activeCard.type === "textCard") {
+      isOptional = activeCard.fields[idx]?.optional || false;
+    }
+
     const val = formData[key as keyof typeof formData];
-    if (typeof val === "string" && !val.trim()) {
+    if (!isOptional && typeof val === "string" && !val.trim()) {
       setErrors(prev => ({ ...prev, [key]: true }));
       const inputEl = document.querySelector(`[name="${key}"]`) as HTMLInputElement | HTMLTextAreaElement;
       if (inputEl) inputEl.focus();
@@ -518,8 +526,6 @@ export default function InquiryChat({ mode = "inline", onClose }: InquiryChatPro
     setActiveSubFieldIndex(idx + 1);
 
     setTimeout(() => {
-      const steps = getSteps(formData);
-      const activeCard = steps[step].card;
       if (activeCard && activeCard.type === "textCard") {
         const nextField = activeCard.fields[idx + 1];
         if (nextField) {
@@ -539,7 +545,8 @@ export default function InquiryChat({ mode = "inline", onClose }: InquiryChatPro
     let firstInvalidKey = "";
     card.fields.forEach(f => {
       const val = formData[f.key as keyof typeof formData];
-      if (!val || (typeof val === "string" && !val.trim())) {
+      const isOptional = f.optional;
+      if (!isOptional && (!val || (typeof val === "string" && !val.trim()))) {
         newErrors[f.key] = true;
         ok = false;
         if (!firstInvalidKey) firstInvalidKey = f.key;
@@ -1006,6 +1013,11 @@ export default function InquiryChat({ mode = "inline", onClose }: InquiryChatPro
               }
 
               if (item.type === "bubble") {
+                let html = item.html;
+                if (html.includes("The pleasure is mine,")) {
+                  html = `The pleasure is mine, <span>${fn()}</span>.`;
+                }
+
                 return (
                   <div
                     key={`item-${idx}`}
@@ -1022,7 +1034,7 @@ export default function InquiryChat({ mode = "inline", onClose }: InquiryChatPro
                     )}
                     <div
                       className={item.emoji ? "bubble emoji-bubble" : "bubble"}
-                      dangerouslySetInnerHTML={{ __html: item.html }}
+                      dangerouslySetInnerHTML={{ __html: html }}
                     />
                     {showAvatar && item.side === "wi" && (
                       <div className="mt-1.5 flex justify-start">
