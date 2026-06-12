@@ -43,14 +43,16 @@ function JournalDetailPage({
       <article className="pt-39">
         {/* Cover Image */}
         <div className="relative overflow-hidden h-65.5 lg:h-185 w-screen -translate-x-1/2 left-1/2">
-          <Image
-            src={`${envVar.API_URL}${journal.cover.url}`}
-            alt={journal.cover.alternativeText}
-            fill
-            className="object-cover"
-            priority
-            sizes="(max-width: 1024px) 100vw, 60vw"
-          />
+          {journal.cover?.url && (
+            <Image
+              src={`${envVar.API_URL}${journal.cover.url}`}
+              alt={journal.cover.alternativeText || journal.title}
+              fill
+              className="object-cover"
+              priority
+              sizes="(max-width: 1024px) 100vw, 60vw"
+            />
+          )}
         </div>
 
         {/* Content */}
@@ -67,9 +69,11 @@ function JournalDetailPage({
                 })}
               </p>
             </div>
-            <div>
-              <p>{journal.reading_time} read</p>
-            </div>
+            {journal.reading_time && (
+              <div>
+                <p>{journal.reading_time} read</p>
+              </div>
+            )}
           </div>
 
           {/* Title */}
@@ -78,10 +82,12 @@ function JournalDetailPage({
           </h1>
 
           <div className="hidden lg:block mt-9 space-y-1">
-            <div className="flex items-center gap-x-2">
-              <h4>By</h4>
-              <p className="text-[#8C8C8C]">{journal.author.name}</p>
-            </div>
+            {journal.author?.name && (
+              <div className="flex items-center gap-x-2">
+                <h4>By</h4>
+                <p className="text-[#8C8C8C]">{journal.author.name}</p>
+              </div>
+            )}
             <div className="flex items-center gap-x-2">
               <h4>Published</h4>
               <p className="text-[#8C8C8C]">
@@ -93,14 +99,18 @@ function JournalDetailPage({
               </p>
             </div>
 
-            <div className="flex items-center gap-x-2">
-              <h4>Category</h4>
-              <p className="text-[#8C8C8C]">{journal.category.name}</p>
-            </div>
+            {journal.category?.name && (
+              <div className="flex items-center gap-x-2">
+                <h4>Category</h4>
+                <p className="text-[#8C8C8C]">{journal.category.name}</p>
+              </div>
+            )}
           </div>
 
           <div className="lg:mx-60 space-y-8">
-            <MarkdownRenderer content={journal.blocks[0].body} />
+            {journal.blocks?.[0]?.body && (
+              <MarkdownRenderer content={journal.blocks[0].body} />
+            )}
           </div>
         </section>
       </article>

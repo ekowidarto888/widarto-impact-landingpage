@@ -1,5 +1,5 @@
 export const envVar = {
-  API_URL: process.env.NEXT_PUBLIC_STRAPI_API_URL,
+  API_URL: process.env.NEXT_PUBLIC_STRAPI_API_URL?.replace(/\/$/, ""),
   API_TOKEN: process.env.NEXT_PUBLIC_STRAPI_API_TOKEN,
   SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "https://widartoimpact.com",
   SMTP_HOST: process.env.SMTP_HOST || "smtp.gmail.com",

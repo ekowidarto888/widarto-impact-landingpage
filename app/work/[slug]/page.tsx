@@ -11,9 +11,11 @@ export async function generateStaticParams() {
   try {
     const worksList = await getWorksData();
     const works = worksList?.data?.works || [];
-    return works.map((work) => ({
-      slug: work.slug,
-    }));
+    return works
+      .filter((work) => typeof work.slug === "string" && work.slug.trim() !== "")
+      .map((work) => ({
+        slug: work.slug,
+      }));
   } catch (error) {
     console.error("Error generating static params for work:", error);
     return [];

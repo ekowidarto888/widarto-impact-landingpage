@@ -12,9 +12,11 @@ export async function generateStaticParams() {
   try {
     const journalsList = await getJournalsData();
     const journals = journalsList?.data || [];
-    return journals.map((journal) => ({
-      slug: journal.slug,
-    }));
+    return journals
+      .filter((journal) => typeof journal.slug === "string" && journal.slug.trim() !== "")
+      .map((journal) => ({
+        slug: journal.slug,
+      }));
   } catch (error) {
     console.error("Error generating static params for journal:", error);
     return [];
